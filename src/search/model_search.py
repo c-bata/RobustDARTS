@@ -106,7 +106,7 @@ class Network(nn.Module):
   def new(self):
     model_new = Network(self._C, self._num_classes, self._layers,
                         self._criterion, self.PRIMITIVES,
-                        drop_path_prob=self.drop_path_prob).cuda()
+                        drop_path_prob=self.drop_path_prob)
     for x, y in zip(model_new.arch_parameters(), self.arch_parameters()):
         x.data.copy_(y.data)
     return model_new

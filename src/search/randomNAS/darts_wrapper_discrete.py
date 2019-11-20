@@ -36,10 +36,9 @@ class DartsWrapper(Helper):
         np.random.seed(args.seed)
         random.seed(args.seed)
         torch.manual_seed(args.seed)
-        torch.cuda.set_device(args.gpu)
         cudnn.benchmark = False
-        cudnn.enabled=True
-        cudnn.deterministic=True
+        cudnn.enabled = True
+        cudnn.deterministic = True
         torch.cuda.manual_seed_all(args.seed)
 
         self.device = torch.device('cuda:{}'.format(args.gpu) if torch.cuda.is_available() else 'cpu')
@@ -58,8 +57,7 @@ class DartsWrapper(Helper):
         self.epochs = 0
         self.total_loss = 0
         self.start_time = time.time()
-        criterion = nn.CrossEntropyLoss()
-        criterion = criterion.cuda()
+        criterion = nn.CrossEntropyLoss().to(self.device)
         self.criterion = criterion
 
         self.primitives = spaces_dict[args.space]
@@ -68,7 +66,7 @@ class DartsWrapper(Helper):
                         args.layers, self.criterion,
                         self.primitives, steps=args.nodes)
 
-        model = model.cuda()
+        model = model.to(self.device)
         self.model = model
 
         optimizer = torch.optim.SGD(

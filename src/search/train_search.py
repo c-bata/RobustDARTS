@@ -40,12 +40,7 @@ schedule_of_params = []
 
 
 def main(primitives):
-  if not torch.cuda.is_available():
-    logging.info('no gpu device available')
-    sys.exit(1)
-
   np.random.seed(args.seed)
-  torch.cuda.set_device(args.gpu)
   cudnn.benchmark = True
   torch.manual_seed(args.seed)
   cudnn.enabled = True
@@ -252,8 +247,7 @@ def main(primitives):
           del analyser
 
           model_new = Network(args.init_channels, args.n_classes, args.layers, criterion,
-                          primitives, steps=args.nodes)
-          model_new = model_new.cuda()
+                              primitives, steps=args.nodes).to(device)
 
           optimizer_new = torch.optim.SGD(
               model_new.parameters(),

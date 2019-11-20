@@ -36,7 +36,6 @@ device = torch.device('cuda:{}'.format(args.gpu) if torch.cuda.is_available() el
 
 def main():
   np.random.seed(args.seed)
-  torch.cuda.set_device(args.gpu)
   cudnn.benchmark = True
   torch.manual_seed(args.seed)
   cudnn.enabled = True
