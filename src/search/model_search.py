@@ -1,8 +1,4 @@
-import torch
-import torch.nn as nn
 import torch.nn.functional as F
-from collections import OrderedDict
-from torch.autograd import Variable
 
 from src.operations import *
 from src.utils import drop_path, Genotype
@@ -141,11 +137,13 @@ class Network(nn.Module):
     k = sum(1 for i in range(self._steps) for n in range(2+i))
     num_ops = len(self.PRIMITIVES['primitives_normal'][0])
 
-    self.alphas_normal = Variable(1e-3*torch.randn(k, num_ops).cuda(), requires_grad=True)
-    self.alphas_reduce = Variable(1e-3*torch.randn(k, num_ops).cuda(), requires_grad=True)
+    # todo(c-bata): It might need to send gpu device.
+    self.alphas_normal =1e-3*torch.randn(k, num_ops)
+    self.alphas_reduce =1e-3*torch.randn(k, num_ops)
+
     self._arch_parameters = [
-      self.alphas_normal,
-      self.alphas_reduce,
+        self.alphas_normal,
+        self.alphas_reduce,
     ]
 
   def arch_parameters(self):

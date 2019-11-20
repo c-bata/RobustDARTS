@@ -1,9 +1,6 @@
 import torch
 import numpy as np
-import torch.nn as nn
 from numpy.linalg import eigvals
-from torch.autograd import Variable
-from copy import deepcopy
 
 
 def _concat(xs):
@@ -56,7 +53,7 @@ class Analyzer(object):
 
         for v, g in zip(self.model.arch_parameters(), dalpha):
             if v.grad is None:
-                v.grad = Variable(g.data)
+                v.grad = g
             else:
                 v.grad.data.copy_(g.data)
 
@@ -134,11 +131,6 @@ class Analyzer(object):
             if p.grad is not None:
                 p.grad.detach_()
                 p.grad.zero_()
-                #if p.grad.volatile:
-                #    p.grad.data.zero_()
-                #else:
-                #    data = p.grad.data
-                #    p.grad = Variable(data.new().resize_as_(data).zero_())
 
     def gradient(self, _outputs, _inputs, grad_outputs=None, retain_graph=None,
                 create_graph=False):
@@ -165,7 +157,7 @@ class Analyzer(object):
 
         n = sum(p.numel() for p in inputs)
         if out is None:
-            out = Variable(torch.zeros(n, n)).type_as(outputs)
+            out = torch.zeros(n, n).type_as(outputs)
 
         ai = 0
         for i, inp in enumerate(inputs):
@@ -180,7 +172,7 @@ class Analyzer(object):
                     row = self.gradient(grad[j], inputs[i:], retain_graph=True)[j:]
                 else:
                     n = sum(x.numel() for x in inputs[i:]) - j
-                    row = Variable(torch.zeros(n)).type_as(grad[j])
+                    row = torch.zeros(n).type_as(grad[j])
                     #row = grad[j].new_zeros(sum(x.numel() for x in inputs[i:]) - j)
 
                 out.data[ai, ai:].add_(row.clone().type_as(out).data)  # ai's row
