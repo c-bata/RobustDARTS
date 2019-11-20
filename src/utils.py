@@ -140,17 +140,16 @@ class EVLocalAvg(object):
                 self.stop_genotype = self.genotypes[self.stop_epoch]
 
 
-class AvgrageMeter(object):
-
+class AvgrageMeter:
   def __init__(self):
     self.reset()
 
   def reset(self):
-    self.avg = 0
-    self.sum = 0
-    self.cnt = 0
+    self.avg: float = 0
+    self.sum: float = 0
+    self.cnt: int = 0
 
-  def update(self, val, n=1):
+  def update(self, val: float, n: int = 1):
     self.sum += val * n
     self.cnt += n
     self.avg = self.sum / self.cnt
@@ -367,7 +366,7 @@ def load_checkpoint(model, optimizer, scheduler, architect, save, la_tracker,
 def drop_path(x, drop_prob):
   if drop_prob > 0.:
     keep_prob = 1.-drop_prob
-    mask = Variable(torch.cuda.FloatTensor(x.size(0), 1, 1, 1).bernoulli_(keep_prob))
+    mask = Variable(torch.FloatTensor(x.size(0), 1, 1, 1).bernoulli_(keep_prob))
     x.div_(keep_prob)
     x.mul_(mask)
   return x

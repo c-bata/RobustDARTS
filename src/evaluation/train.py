@@ -68,8 +68,6 @@ def main():
   model = Network(args.init_channels, args.n_classes, args.layers, args.auxiliary, genotype)
   if TORCH_VERSION.startswith('1'):
     model = model.to(device)
-  else:
-    model = model.cuda()
 
   if args.model_path is not None:
     utils.load(model, args.model_path, genotype)
@@ -79,8 +77,6 @@ def main():
   criterion = nn.CrossEntropyLoss()
   if TORCH_VERSION.startswith('1'):
     criterion = criterion.to(device)
-  else:
-    criterion = criterion.cuda()
 
   optimizer = torch.optim.SGD(
       model.parameters(),
@@ -134,8 +130,8 @@ def train(train_queue, model, criterion, optimizer):
       input = input.to(device)
       target = target.to(device)
     else:
-      input = Variable(input).cuda()
-      target = Variable(target).cuda(async=True)
+      input = Variable(input)
+      target = Variable(target)
 
     optimizer.zero_grad()
     logits, logits_aux = model(input)
@@ -197,8 +193,8 @@ def infer(valid_queue, model, criterion):
             break
   else:
     for step, (input, target) in enumerate(valid_queue):
-      input = Variable(input, volatile=True).cuda()
-      target = Variable(target, volatile=True).cuda(async=True)
+      input = Variable(input, volatile=True)
+      target = Variable(target, volatile=True)
 
       logits, _ = model(input)
       loss = criterion(logits, target)

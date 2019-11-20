@@ -110,7 +110,7 @@ class Network(nn.Module):
   def new(self):
     model_new = Network(self._C, self._num_classes, self._layers,
                         self._criterion, self.PRIMITIVES,
-                        drop_path_prob=self.drop_path_prob).cuda()
+                        drop_path_prob=self.drop_path_prob)
     for x, y in zip(model_new.arch_parameters(), self.arch_parameters()):
         x.data.copy_(y.data)
     return model_new
@@ -141,8 +141,8 @@ class Network(nn.Module):
     k = sum(1 for i in range(self._steps) for n in range(2+i))
     num_ops = len(self.PRIMITIVES['primitives_normal'][0])
 
-    self.alphas_normal = Variable(1e-3*torch.randn(k, num_ops).cuda(), requires_grad=True)
-    self.alphas_reduce = Variable(1e-3*torch.randn(k, num_ops).cuda(), requires_grad=True)
+    self.alphas_normal = Variable(1e-3*torch.randn(k, num_ops), requires_grad=True)
+    self.alphas_reduce = Variable(1e-3*torch.randn(k, num_ops), requires_grad=True)
     self._arch_parameters = [
       self.alphas_normal,
       self.alphas_reduce,
