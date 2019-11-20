@@ -1,6 +1,3 @@
-import torch
-import torch.nn as nn
-
 from src.operations import *
 from src.utils import drop_path
 

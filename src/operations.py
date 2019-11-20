@@ -1,7 +1,5 @@
 import torch
 import torch.nn as nn
-from torch.autograd import Variable
-import numpy as np
 
 OPS = {
   'noise': lambda C, stride, affine: NoiseOp(stride, 0., 1.),
@@ -35,7 +33,7 @@ class NoiseOp(nn.Module):
           x_new = x[:,:,::self.stride,::self.stride]
         else:
           x_new = x
-        noise = Variable(x_new.data.new(x_new.size()).normal_(self.mean, self.std))
+        noise = x_new.new_empty(x_new.size()).normal_(self.mean, self.std)
         return noise
 
 

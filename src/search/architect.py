@@ -1,7 +1,5 @@
 import torch
 import numpy as np
-import torch.nn as nn
-from torch.autograd import Variable
 
 
 def _concat(xs):
@@ -54,7 +52,7 @@ class Architect(object):
 
     for v, g in zip(self.model.arch_parameters(), dalpha):
       if v.grad is None:
-        v.grad = Variable(g.data)
+        v.grad = g
       else:
         v.grad.data.copy_(g.data)
 
@@ -71,7 +69,7 @@ class Architect(object):
     assert offset == len(theta)
     model_dict.update(params)
     model_new.load_state_dict(model_dict)
-    return model_new.cuda()
+    return model_new
 
   def _hessian_vector_product(self, vector, input, target, r=1e-2):
     R = r / _concat(vector).norm()
